@@ -1,8 +1,9 @@
 /*****************************************************************************/
-/**                          TAR FILE PARSER V1.0                           **/
+/**                          TAR FILE PARSER V1.1                           **/
 /** Created: 08/05/2026                            IDE: Mounriver Studio    **/
 /** Autor: Gustavo Pereira da Silva                License: MIT             **/
 /*****************************************************************************/
+// MOD 28/05/2026
 
 #ifndef TarAnalizer_H
 #define TarAnalizer_H
@@ -29,6 +30,8 @@ uint32_t oct2int(uint8_t str[], uint16_t offset){
 
 uint8_t  T_FILES_Count=0;
 uint32_t T_FILES[MaxFileList][2];
+uint32_t T_File=0;
+
 uint8_t  T_FILES_Type[MaxFileList];  // Not implemented
 
 
@@ -53,6 +56,29 @@ void TAR_Analizer(){
         NextHeader += (((T_FILES[i][1]+511)/512)+1);
     }
 
+}
+
+
+uint32_t Tar_fopen(uint8_t f){
+
+    T_File=0;
+    if(f && (f<=T_FILES_Count)){
+        T_File = T_FILES[f-1][0] + 1;
+    }
+    return T_File;
+}
+
+
+void Tar_PrintFiles(){
+
+    uint8_t BF_STR[256];
+
+    printf("---- TAR FILE LIST ----\r\n");
+    for(uint8_t i=0;i<T_FILES_Count;i++){
+
+        Nor_PageRead( (T_FILES[i][0]*512)/256 ,BF_STR);
+        printf("%d %s\r\n",i+1,BF_STR);
+    }
 }
 
 
